@@ -47,7 +47,7 @@ Aplikasi ini dibangun menggunakan teknologi terkini:
 
 1.  **Clone repository ini**:
     ```bash
-    git clone [https://github.com/username/pet_information.git](https://github.com/username/pet_information.git)
+    git clone [https://github.com/Rioprmn/pet_information.git](https://github.com/Rioprmn/pet_information.git)
     ```
 2.  **Masuk ke direktori project**:
     ```bash
