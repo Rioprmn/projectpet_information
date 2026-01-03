@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pet_information/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../theme_provider.dart';
 import 'login_page.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -9,85 +8,156 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Memanggil provider agar bisa mengubah tema
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final user = FirebaseAuth.instance.currentUser;
+    final isDarkMode = themeProvider.isDarkMode;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Profil Pengguna"),
+        title: const Text(
+          "Profil Pengguna",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Column(
         children: [
+          // HEADER PROFIL DENGAN EFEK MELENGKUNG
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            decoration: const BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, size: 60, color: Colors.green),
+                ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Pecinta Satwa",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  "user@petinfo.com",
+                  style: TextStyle(color: Colors.green.shade100),
+                ),
+              ],
+            ),
+          ),
+
           const SizedBox(height: 30),
-          // Bagian Header Profil
-          const Center(
-            child: CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.green,
-              child: Icon(Icons.person, size: 60, color: Colors.white),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Text(
-            user?.email ?? "User Email",
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const Divider(height: 40, thickness: 1),
 
-          // Pengaturan Fitur 3: Dark Mode Toggle
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              child: ListTile(
-                leading: Icon(
-                  themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                  color: Colors.orange,
+          // LIST MENU
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              children: [
+                // Switch Dark Mode
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                      color: Colors.orange,
+                    ),
+                    title: const Text("Mode Gelap"),
+                    trailing: Switch(
+                      value: isDarkMode,
+                      activeColor: Colors.green,
+                      onChanged: (value) {
+                        themeProvider.toggleTheme();
+                      },
+                    ),
+                  ),
                 ),
-                title: const Text("Mode Gelap"),
-                trailing: Switch(
-                  value: themeProvider.isDarkMode,
-                  onChanged: (value) {
-                    themeProvider.toggleTheme();
-                  },
-                ),
-              ),
-            ),
-          ),
 
-          const Spacer(), // Memberi jarak agar tombol logout di bawah
-          
-          // Tombol Logout
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade400,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                const SizedBox(height: 10),
+
+                // Edit Profil
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    leading: const Icon(Icons.edit, color: Colors.blue),
+                    title: const Text("Edit Profil"),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      // Fitur tambahan nantinya
+                    },
+                  ),
                 ),
-                icon: const Icon(Icons.logout),
-                label: const Text("Logout dari Aplikasi"),
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  if (context.mounted) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (route) => false,
-                    );
-                  }
-                },
-              ),
+
+                const SizedBox(height: 10),
+
+                // Tombol Logout
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    leading: const Icon(Icons.logout, color: Colors.red),
+                    title: const Text(
+                      "Keluar",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onTap: () {
+                      _showLogoutDialog(context);
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Apakah kamu yakin ingin keluar dari aplikasi?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
+              );
+            },
+            child: const Text(
+              "Ya, Keluar",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ],
       ),
     );
