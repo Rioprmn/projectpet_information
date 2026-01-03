@@ -79,5 +79,7 @@ Aplikasi ini dibangun menggunakan teknologi terkini:
 ---
 
 **Dibuat oleh:**
-- Nama: [Nama Kamu]
+-  Nama: [Rio Permana]
+-   NIM: 23552011057
+- Kelas: TIF 23 RP CNS A
 - Project: pet_information (Tugas Besar Pemrograman Mobile)
