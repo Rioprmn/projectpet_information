@@ -1,27 +1,63 @@
 import 'package:flutter/material.dart';
 import '../models/animal_model.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget { // Ubah ke StatefulWidget untuk handle state favorit lokal
   final Animal animal;
 
   const DetailPage({super.key, required this.animal});
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  bool isFavorite = false; // Status favorit lokal
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(animal.name),
+        title: Text(widget.animal.name),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
+        actions: [
+          // Fitur 2: Tombol Favorite di Detail Page
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.white,
+            ),
+            onPressed: () {
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(isFavorite 
+                    ? "${widget.animal.name} ditambah ke Favorit" 
+                    : "Dihapus dari Favorit"),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            },
+          ),
+          // Tombol Share (Opsional, tapi keren buat fitur tambahan)
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              // Logika share bisa ditambah nanti
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Hero(
-              tag: 'photo-${animal.name}', 
+              tag: 'photo-${widget.animal.name}', 
               child: Image.network(
-                animal.imageUrl,
+                widget.animal.imageUrl,
                 width: double.infinity,
                 height: 300,
                 fit: BoxFit.cover,
@@ -35,11 +71,11 @@ class DetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    animal.name,
+                    widget.animal.name,
                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    animal.latinName,
+                    widget.animal.latinName,
                     style: const TextStyle(fontSize: 20, fontStyle: FontStyle.italic, color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
@@ -50,7 +86,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Chip(
-                    label: Text(animal.status, style: const TextStyle(color: Colors.white)),
+                    label: Text(widget.animal.status, style: const TextStyle(color: Colors.white)),
                     backgroundColor: Colors.red,
                   ),
                   const SizedBox(height: 20),
@@ -59,9 +95,8 @@ class DetailPage extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 10),
-                  // SEKARANG MENGGUNAKAN DATA DINAMIS DARI FIREBASE
                   Text(
-                    animal.description, 
+                    widget.animal.description, 
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
                 ],

@@ -1,5 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_information/theme_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -7,56 +9,86 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mengambil data user yang sedang login
+    // Memanggil provider agar bisa mengubah tema
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profil Pengguna"),
         backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.green,
-                child: Icon(Icons.person, size: 50, color: Colors.white),
-              ),
-              const SizedBox(height: 20),
-              const Text("Login sebagai:", style: TextStyle(color: Colors.grey)),
-              Text(
-                user?.email ?? "User tidak dikenal",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                    if (context.mounted) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginPage()),
-                        (route) => false,
-                      );
-                    }
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+          // Bagian Header Profil
+          const Center(
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.green,
+              child: Icon(Icons.person, size: 60, color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 15),
+          Text(
+            user?.email ?? "User Email",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const Divider(height: 40, thickness: 1),
+
+          // Pengaturan Fitur 3: Dark Mode Toggle
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              child: ListTile(
+                leading: Icon(
+                  themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                  color: Colors.orange,
+                ),
+                title: const Text("Mode Gelap"),
+                trailing: Switch(
+                  value: themeProvider.isDarkMode,
+                  onChanged: (value) {
+                    themeProvider.toggleTheme();
                   },
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  label: const Text("LOGOUT", style: TextStyle(color: Colors.white)),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+
+          const Spacer(), // Memberi jarak agar tombol logout di bawah
+          
+          // Tombol Logout
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade400,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                icon: const Icon(Icons.logout),
+                label: const Text("Logout dari Aplikasi"),
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  if (context.mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                      (route) => false,
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
