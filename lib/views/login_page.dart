@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pet_information/services/auth_service.dart';
 import 'package:pet_information/views/home_page.dart';
-import '../services/auth_service.dart';
+import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,6 +39,16 @@ class _LoginPageState extends State<LoginPage> {
                 }
               },
               child: const Text("Login"),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
+              },
+              child: const Text("Belum punya akun? Daftar di sini"),
             ),
           ],
         ),

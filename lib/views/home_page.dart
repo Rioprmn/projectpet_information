@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/animal_model.dart';
+import 'detail_page.dart';
+import 'profile_page.dart';
+import 'news_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,6 +15,28 @@ class HomePage extends StatelessWidget {
         title: const Text("Pet Information - Daftar Hewan"),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
+        actions: [
+          // Tombol Berita (REST API)
+          IconButton(
+            icon: const Icon(Icons.newspaper),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const NewsPage()),
+              );
+            },
+          ),
+          // Tombol Profil (Halaman ke-6)
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('animals').snapshots(),
@@ -28,31 +53,42 @@ class HomePage extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(10),
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              // Ambil data dan ID dokumen
               String docId = document.id;
               Animal animal = Animal.fromJson(document.data() as Map<String, dynamic>);
               
               return Card(
-                elevation: 3,
+                elevation: 0,
                 margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  side: BorderSide(color: Colors.grey.shade200),
+                ),
                 child: ListTile(
-                  // Fitur DELETE: Tekan lama pada kartu untuk hapus
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPage(animal: animal),
+                      ),
+                    );
+                  },
                   onLongPress: () => _showDeleteConfirm(context, docId, animal.name),
-                  
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      animal.imageUrl, 
-                      width: 60, 
-                      height: 60, 
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.pets, size: 40),
+                  leading: Hero(
+                    tag: 'photo-${animal.name}',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        animal.imageUrl, 
+                        width: 60, 
+                        height: 60, 
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.pets, size: 40),
+                      ),
                     ),
                   ),
                   title: Text(animal.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(animal.latinName, style: const TextStyle(fontStyle: FontStyle.italic)),
-                  
-                  // Fitur UPDATE: Ikon pensil di sebelah kanan
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -94,6 +130,7 @@ class HomePage extends StatelessWidget {
     final latinController = TextEditingController();
     final statusController = TextEditingController();
     final imageController = TextEditingController();
+    final descController = TextEditingController();
 
     showDialog(
       context: context,
@@ -107,6 +144,11 @@ class HomePage extends StatelessWidget {
               TextField(controller: latinController, decoration: const InputDecoration(labelText: "Nama Latin")),
               TextField(controller: statusController, decoration: const InputDecoration(labelText: "Status")),
               TextField(controller: imageController, decoration: const InputDecoration(labelText: "URL Foto")),
+              TextField(
+                controller: descController, 
+                maxLines: 3, 
+                decoration: const InputDecoration(labelText: "Deskripsi Singkat")
+              ),
             ],
           ),
         ),
@@ -121,6 +163,7 @@ class HomePage extends StatelessWidget {
                   'latin_name': latinController.text,
                   'status': statusController.text,
                   'image_url': imageController.text,
+                  'description': descController.text,
                 });
                 if (context.mounted) Navigator.pop(context);
               }
@@ -138,6 +181,7 @@ class HomePage extends StatelessWidget {
     final latinController = TextEditingController(text: animal.latinName);
     final statusController = TextEditingController(text: animal.status);
     final imageController = TextEditingController(text: animal.imageUrl);
+    final descController = TextEditingController(text: animal.description);
 
     showDialog(
       context: context,
@@ -151,6 +195,11 @@ class HomePage extends StatelessWidget {
               TextField(controller: latinController, decoration: const InputDecoration(labelText: "Nama Latin")),
               TextField(controller: statusController, decoration: const InputDecoration(labelText: "Status")),
               TextField(controller: imageController, decoration: const InputDecoration(labelText: "URL Foto")),
+              TextField(
+                controller: descController, 
+                maxLines: 3, 
+                decoration: const InputDecoration(labelText: "Deskripsi")
+              ),
             ],
           ),
         ),
@@ -164,6 +213,7 @@ class HomePage extends StatelessWidget {
                 'latin_name': latinController.text,
                 'status': statusController.text,
                 'image_url': imageController.text,
+                'description': descController.text,
               });
               if (context.mounted) Navigator.pop(context);
             },
