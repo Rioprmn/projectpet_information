@@ -16,7 +16,7 @@ Aplikasi ini telah memenuhi standar aplikasi modern dengan fitur-fitur berikut:
 * **Sistem Favorit**: Menyimpan hewan pilihan ke penyimpanan lokal menggunakan `Shared Preferences`.
 * **UI/UX Premium**: 
     * **Detail View**: Halaman detail dengan desain Glassmorphism dan layout yang bersih.
-    * **Responsive Design**: Tampilan yang menyesuaikan antara versi Mobile dan Web (PWA).
+    * **Responsive Design**: Tampilan yang menyesuaikan antara versi Mobile dan Web (PWA) https://pet-information-mobile.netlify.app/.
     * **Dark Mode Support**: Mendukung tema gelap sistem secara otomatis.
 
 ---
