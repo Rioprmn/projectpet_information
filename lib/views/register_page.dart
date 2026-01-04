@@ -9,18 +9,80 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  // Controller untuk mengambil teks dari inputan user
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
 
+  // Fungsi untuk mendaftarkan user baru ke Firebase
   Future<void> _signUp() async {
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Password tidak cocok! ❌")));
+    // 1. Validasi jika ada field yang kosong
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty ||
+        _confirmPasswordController.text.trim().isEmpty) {
+      _showError("Semua data harus diisi! ⚠️");
       return;
     }
+
+    // 2. Validasi apakah password dan konfirmasi password sama
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showError("Password tidak cocok! ❌");
+      return;
+    }
+
+    // 3. Tampilkan loading
+    setState(() => _isLoading = true);
+
+    try {
+      // 4. Proses kirim data ke Firebase Auth
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // 5. Jika sukses
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Pendaftaran Berhasil! 🎉 Silakan Login."),
+          ),
+        );
+        Navigator.pop(context); // Kembali ke halaman Login
+      }
+    } on FirebaseAuthException catch (e) {
+      // 6. Tangani error dari Firebase
+      String errorMsg = "Terjadi kesalahan.";
+      if (e.code == 'weak-password') {
+        errorMsg = "Password terlalu lemah (Min. 6 karakter).";
+      } else if (e.code == 'email-already-in-use') {
+        errorMsg = "Email sudah terdaftar!";
+      } else if (e.code == 'invalid-email') {
+        errorMsg = "Format email tidak valid.";
+      }
+      _showError(errorMsg);
+    } catch (e) {
+      _showError("Koneksi gagal. Cek internet kamu.");
+    } finally {
+      // 7. Matikan loading
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  // Fungsi bantuan untuk menampilkan pesan error (SnackBar)
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
+    );
+  }
+
+  @override
+  void dispose() {
+    // Membersihkan memori saat halaman ditutup
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
