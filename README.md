@@ -1,85 +1,83 @@
 # 🐾 Pet Information App
 
-Project **Pet Information** adalah aplikasi mobile berbasis Flutter yang dirancang untuk mengelola dan menampilkan informasi mengenai berbagai jenis hewan, khususnya spesies yang dilindungi. Proyek ini dibuat untuk memenuhi **Tugas Besar Individu Pemrograman Mobile**.
+Project **Pet Information** adalah aplikasi mobile lintas platform (Android & Web) yang dirancang untuk mengelola dan menampilkan informasi komprehensif mengenai berbagai jenis hewan. Proyek ini merupakan implementasi nyata dari integrasi Cloud Database dan REST API untuk **Tugas Besar Pemrograman Mobile**.
 
 ---
 
-## 🚀 Fitur Utama
+## 🚀 Fitur Utama & Progress
 
-Aplikasi ini mencakup fungsi **CRUD (Create, Read, Update, Delete)** yang terintegrasi penuh dengan layanan Cloud:
+Aplikasi ini telah memenuhi standar aplikasi modern dengan fitur-fitur berikut:
 
-* **Autentikasi Pengguna**: Login aman menggunakan Firebase Authentication.
-* **Daftar Hewan Real-time**: Menampilkan daftar hewan langsung dari Cloud Firestore menggunakan `StreamBuilder`.
-* **Manajemen Data (CRUD)**:
-    * **Create**: Menambah data hewan baru (nama, nama latin, status, dan foto).
-    * **Update**: Memperbarui informasi hewan yang sudah ada.
-    * **Delete**: Menghapus data hewan dengan fitur konfirmasi (Long Press).
-* **Detail View & Animasi**: Perpindahan halaman yang halus menggunakan **Hero Animation** pada gambar hewan.
+* **Autentikasi Firebase**: Sistem Login dan Register yang aman.
+* **Manajemen Data Real-time (CRUD)**:
+    * **Create/Update/Delete**: Tambah, edit, dan hapus data hewan langsung ke Cloud Firestore.
+    * **Search & Filtering**: Pencarian hewan berdasarkan nama dan kategori (Dilindungi/Biasa) menggunakan TabBar.
+* **Integrasi REST API (News Module)**: Menampilkan berita konservasi hewan terbaru yang diambil dari external API (npoint.io).
+* **Sistem Favorit**: Menyimpan hewan pilihan ke penyimpanan lokal menggunakan `Shared Preferences`.
+* **UI/UX Premium**: 
+    * **Detail View**: Halaman detail dengan desain Glassmorphism dan layout yang bersih.
+    * **Responsive Design**: Tampilan yang menyesuaikan antara versi Mobile dan Web (PWA).
+    * **Dark Mode Support**: Mendukung tema gelap sistem secara otomatis.
 
 ---
 
 ## 🛠️ Arsitektur & Teknologi
 
-Aplikasi ini dibangun menggunakan teknologi terkini:
-
-* **Bahasa Pemrograman**: Dart
-* **Framework**: Flutter
-* **Backend as a Service (BaaS)**: [Firebase](https://firebase.google.com/)
-    * **Firebase Auth**: Untuk manajemen akun pengguna.
-    * **Cloud Firestore**: Database NoSQL untuk penyimpanan data hewan secara real-time.
-* **State Management**: Menggunakan fitur bawaan Flutter (`setState` & `StreamBuilder`).
-
-
+* **Framework**: Flutter (Dart)
+* **Backend & Database**: 
+    * [Firebase Auth](https://firebase.google.com/): Autentikasi User.
+    * [Cloud Firestore](https://firebase.google.com/docs/firestore): Database NoSQL Real-time.
+* **REST API**: Data berita via JSON API  https://api.npoint.io/79589d4930b56adc5c24.
+* **Local Storage**: `shared_preferences` untuk data favorit.
+* **Rendering Web**: CanvasKit & HTML Renderer untuk optimasi PWA.
 
 ---
 
 ## 📱 Tampilan Aplikasi
 
-| Halaman Login | Daftar Hewan | Form Tambah/Edit |
-| :---: | :---: | :---: |
-| ![Login](https://via.placeholder.com/200x400?text=Login+Page) | ![Home](https://via.placeholder.com/200x400?text=Home+Page) | ![Form](https://via.placeholder.com/200x400?text=Form+CRUD) |
+| Halaman Login | Daftar Hewan (Home) | Detail Hewan (Premium) | Berita (REST API) |
+| :---: | :---: | :---: | :---: |
+| ![Login](https://via.placeholder.com/150x300?text=Login) | ![Home](https://via.placeholder.com/150x300?text=Home) | ![Detail](https://via.placeholder.com/150x300?text=Detail) | ![News](https://via.placeholder.com/150x300?text=News) |
 
-*(Tips: Kamu bisa mengganti link gambar di atas dengan screenshot aplikasi kamu nantinya)*
+*(Tips: Segera ganti placeholder di atas dengan screenshot asli APK/Web kamu untuk presentasi)*
 
 ---
 
 ## ⚙️ Cara Menjalankan Project
 
-1.  **Clone repository ini**:
+1.  **Clone & Install**:
     ```bash
     git clone [https://github.com/Rioprmn/pet_information.git](https://github.com/Rioprmn/pet_information.git)
-    ```
-2.  **Masuk ke direktori project**:
-    ```bash
     cd pet_information
-    ```
-3.  **Install dependencies**:
-    ```bash
     flutter pub get
     ```
-4.  **Konfigurasi Firebase**:
-    Pastikan file `firebase_options.dart` sudah terkonfigurasi dengan project Firebase kamu.
-5.  **Jalankan aplikasi**:
+
+2.  **Konfigurasi Android (SHA-1)**:
+    Pastikan SHA-1 sudah terdaftar di Firebase Console agar fitur login di APK tidak terblokir.
     ```bash
-    flutter run
+    cd android && ./gradlew signingReport
     ```
+
+3.  **Build & Run**:
+    * **Android**: `flutter run` atau `flutter build apk --release`
+    * **Web**: `flutter run -d chrome --web-renderer html`
 
 ---
 
-## 📋 Progress Tugas Besar
+## 📋 Progress Tugas Besar (Status: Final)
 
-- [x] Ide Bebas (Informasi Hewan)
-- [x] Integrasi Firebase (Auth & Firestore)
-- [x] Fitur CRUD (Selesai)
-- [x] Implementasi Animasi (Hero Animation)
-- [ ] Implementasi REST API (Next Phase)
-- [ ] 7 Halaman Dinamis (4/7 Completed)
-- [ ] Deploy PWA/APK
+- [x] **Ide & Tema**: Informasi Hewan (Selesai)
+- [x] **Firebase**: Auth & Firestore (Selesai)
+- [x] **CRUD**: Full Implementasi (Selesai)
+- [x] **REST API**: Berita Hewan via npoint.io (Selesai)
+- [x] **Halaman Dinamis**: 7+ Halaman (Login, Register, Home, Detail, News, Favorite, Profile) (Selesai)
+- [x] **Local Storage**: Shared Preferences untuk Favorit (Selesai)
+- [x] **Deployment**: PWA di Netlify & APK Release (Selesai)
 
 ---
 
 **Dibuat oleh:**
--  Nama: [Rio Permana]
--   NIM: 23552011057
-- Kelas: TIF 23 RP CNS A
-- Project: pet_information (Tugas Besar Pemrograman Mobile)
+- **Nama**: Rio Permana
+- **NIM**: 23552011057
+- **Kelas**: TIF 23 RP CNS A
+- **Project**: pet_information (Tugas Besar Pemrograman Mobile)
