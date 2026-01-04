@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_information/services/auth_service.dart';
 import 'package:pet_information/views/home_page.dart';
 import 'register_page.dart';
@@ -15,6 +16,69 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _isLoading = false;
+
+  Future<void> _handleLogin() async {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      _showError("Email dan password wajib diisi");
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _authService.login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String msg = "Login gagal";
+
+      switch (e.code) {
+        case 'user-not-found':
+          msg = "Email tidak terdaftar";
+          break;
+        case 'wrong-password':
+          msg = "Password salah";
+          break;
+        case 'invalid-email':
+          msg = "Format email tidak valid";
+          break;
+        case 'network-request-failed':
+          msg = "Cek koneksi internet";
+          break;
+      }
+
+      _showError(msg);
+    } catch (e) {
+      _showError("Unexpected error: $e");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +129,10 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         TextField(
                           controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: "Email Sahabat",
-                            prefixIcon: const Icon(
-                              Icons.email_outlined,
-                              color: Colors.green,
-                            ),
+                            prefixIcon: const Icon(Icons.email_outlined),
                             filled: true,
                             fillColor: Colors.grey.shade50,
                             border: OutlineInputBorder(
@@ -85,10 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                             labelText: "Kata Sandi",
-                            prefixIcon: const Icon(
-                              Icons.lock_outline,
-                              color: Colors.green,
-                            ),
+                            prefixIcon: const Icon(Icons.lock_outline),
                             filled: true,
                             fillColor: Colors.grey.shade50,
                             border: OutlineInputBorder(
@@ -104,27 +163,13 @@ class _LoginPageState extends State<LoginPage> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green,
                                   foregroundColor: Colors.white,
-                                  minimumSize: const Size(double.infinity, 55),
+                                  minimumSize:
+                                      const Size(double.infinity, 55),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
-                                onPressed: () async {
-                                  setState(() => _isLoading = true);
-                                  var user = await _authService.login(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  );
-                                  setState(() => _isLoading = false);
-                                  if (user != null) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
-                                      ),
-                                    );
-                                  }
-                                },
+                                onPressed: _handleLogin,
                                 child: const Text(
                                   "Masuk Sekarang",
                                   style: TextStyle(
@@ -141,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const RegisterPage(),
+                      builder: (_) => const RegisterPage(),
                     ),
                   ),
                   child: const Text(

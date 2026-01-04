@@ -3,31 +3,51 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Fungsi Register
-  Future<User?> register(String email, String password) async {
+  // REGISTER
+  Future<User> register(String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      return result.user;
-    } catch (e) {
-      print(e.toString());
-      return null;
+      UserCredential result =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (result.user == null) {
+        throw FirebaseAuthException(
+          code: 'user-null',
+          message: 'User tidak terbentuk',
+        );
+      }
+
+      return result.user!;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message);
     }
   }
 
-  // Fungsi Login
-  Future<User?> login(String email, String password) async {
+  // LOGIN
+  Future<User> login(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      return result.user;
-    } catch (e) {
-      print(e.toString());
-      return null;
+      UserCredential result =
+          await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (result.user == null) {
+        throw FirebaseAuthException(
+          code: 'user-null',
+          message: 'User tidak ditemukan',
+        );
+      }
+
+      return result.user!;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message);
     }
   }
 
-  // Fungsi Logout
+  // LOGOUT
   Future<void> logout() async {
     await _auth.signOut();
   }

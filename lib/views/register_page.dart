@@ -9,76 +9,90 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // Controller untuk mengambil teks dari inputan user
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
   bool _isLoading = false;
 
-  // Fungsi untuk mendaftarkan user baru ke Firebase
   Future<void> _signUp() async {
-    // 1. Validasi jika ada field yang kosong
-    if (_emailController.text.trim().isEmpty ||
-        _passwordController.text.trim().isEmpty ||
-        _confirmPasswordController.text.trim().isEmpty) {
-      _showError("Semua data harus diisi! ⚠️");
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    // VALIDASI KOSONG
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      _showError("Semua data wajib diisi.");
       return;
     }
 
-    // 2. Validasi apakah password dan konfirmasi password sama
-    if (_passwordController.text != _confirmPasswordController.text) {
-      _showError("Password tidak cocok! ❌");
+    // VALIDASI PASSWORD
+    if (password != confirmPassword) {
+      _showError("Password dan konfirmasi tidak sama.");
       return;
     }
 
-    // 3. Tampilkan loading
     setState(() => _isLoading = true);
 
     try {
-      // 4. Proses kirim data ke Firebase Auth
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
       );
 
-      // 5. Jika sukses
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Pendaftaran Berhasil! 🎉 Silakan Login."),
-          ),
-        );
-        Navigator.pop(context); // Kembali ke halaman Login
-      }
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Pendaftaran berhasil! Silakan login."),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      // 6. Tangani error dari Firebase
-      String errorMsg = "Terjadi kesalahan.";
-      if (e.code == 'weak-password') {
-        errorMsg = "Password terlalu lemah (Min. 6 karakter).";
-      } else if (e.code == 'email-already-in-use') {
-        errorMsg = "Email sudah terdaftar!";
-      } else if (e.code == 'invalid-email') {
-        errorMsg = "Format email tidak valid.";
+      String message;
+
+      switch (e.code) {
+        case 'weak-password':
+          message = "Password terlalu lemah (min. 6 karakter).";
+          break;
+        case 'email-already-in-use':
+          message = "Email sudah terdaftar.";
+          break;
+        case 'invalid-email':
+          message = "Format email tidak valid.";
+          break;
+        case 'network-request-failed':
+          message = "Gagal terhubung ke server. Coba lagi.";
+          break;
+        case 'app-not-authorized':
+          message = "Aplikasi belum terverifikasi (SHA-1).";
+          break;
+        default:
+          message = e.message ?? "Terjadi kesalahan.";
       }
-      _showError(errorMsg);
-    } catch (e) {
-      _showError("Koneksi gagal. Cek internet kamu.");
+
+      _showError(message);
+    } catch (_) {
+      _showError("Terjadi kesalahan tidak diketahui.");
     } finally {
-      // 7. Matikan loading
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // Fungsi bantuan untuk menampilkan pesan error (SnackBar)
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
     );
   }
 
   @override
   void dispose() {
-    // Membersihkan memori saat halaman ditutup
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
