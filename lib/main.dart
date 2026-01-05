@@ -5,6 +5,7 @@ import 'package:provider/provider.dart'; // Tambahkan ini
 import 'package:pet_information/views/login_page.dart';
 import 'package:pet_information/theme_provider.dart'; // Pastikan path ini benar
 import 'firebase_options.dart';
+import 'services/auth_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
       // Menentukan mode tema berdasarkan data di Provider
       themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       
-      home: const LoginPage(),
+      home: const AuthWrapper(),
     );
   }
 }
