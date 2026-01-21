@@ -72,19 +72,11 @@ Netlify Demo: [https://pet-information-mobile.netlify.app/](https://pet-informat
 
 ---
 
-## 🎬 Demo Video
+## 🎬 Demo GIF
 
-<details>
-<summary>Klik untuk melihat semua demo video</summary>
+### Mobile Review
+<img src="https://raw.githubusercontent.com/Rioprmn/pet_information/main/gifs/mobile_review.gif" width="480" />
 
-### Video 1: Mobile Review
-<video width="480" controls>
-  <source src="https://raw.githubusercontent.com/Rioprmn/pet_information/main/videos/mobile_review.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-
-</details>
 
 ---
 
