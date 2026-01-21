@@ -75,7 +75,7 @@ Netlify Demo: [https://pet-information-mobile.netlify.app/](https://pet-informat
 ## 🎬 Demo GIF
 
 ### Mobile Review
-![Mobile Review](https://raw.githubusercontent.com/Rioprmn/projectpet_information/main/gifs/mobile.riview.gif)
+<img src="https://raw.githubusercontent.com/Rioprmn/projectpet_information/main/gifs/mobile.riview.gif" width="320" />
 
 ---
 
