@@ -35,12 +35,7 @@ Aplikasi ini telah memenuhi standar aplikasi modern dengan fitur-fitur berikut:
 
 ## 📱 Tampilan Aplikasi
 
-| Halaman Login | Daftar Hewan (Home) | Detail Hewan (Premium) | Berita (REST API) |
-| :---: | :---: | :---: | :---: |
-| ![Login](https://via.placeholder.com/150x300?text=Login) | ![Home](https://via.placeholder.com/150x300?text=Home) | ![Detail](https://via.placeholder.com/150x300?text=Detail) | ![News](https://via.placeholder.com/150x300?text=News) |
-
-*(Tips: Segera ganti placeholder di atas dengan screenshot asli APK/Web kamu untuk presentasi)*
-
+link netlify: (https://pet-information-mobile.netlify.app/)
 ---
 
 ## ⚙️ Cara Menjalankan Project
