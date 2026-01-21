@@ -35,14 +35,15 @@ Aplikasi ini telah memenuhi standar aplikasi modern dengan fitur-fitur berikut:
 
 ## 📱 Tampilan Aplikasi
 
-link netlify: (https://pet-information-mobile.netlify.app/)
+Netlify Demo: [https://pet-information-mobile.netlify.app/](https://pet-information-mobile.netlify.app/)
+
 ---
 
 ## ⚙️ Cara Menjalankan Project
 
 1.  **Clone & Install**:
     ```bash
-    git clone [https://github.com/Rioprmn/pet_information.git](https://github.com/Rioprmn/pet_information.git)
+    git clone https://github.com/Rioprmn/pet_information.git
     cd pet_information
     flutter pub get
     ```
@@ -71,15 +72,24 @@ link netlify: (https://pet-information-mobile.netlify.app/)
 
 ---
 
+## 🎬 Demo Video
+
+<details>
+<summary>Klik untuk melihat semua demo video</summary>
+
+### Video 1: Mobile Review
+<video width="480" controls>
+  <source src="https://raw.githubusercontent.com/Rioprmn/pet_information/main/videos/mobile_review.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+
+</details>
+
+---
+
 **Dibuat oleh:**
 - **Nama**: Rio Permana
 - **NIM**: 23552011057
 - **Kelas**: TIF 23 RP CNS A
 - **Project**: pet_information (Tugas Besar Pemrograman Mobile)
-
-
-<h3>Demo Video</h3>
-<video width="480" controls>
-  <source src="videos/mobile.riview.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
