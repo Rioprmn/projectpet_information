@@ -76,3 +76,10 @@ link netlify: (https://pet-information-mobile.netlify.app/)
 - **NIM**: 23552011057
 - **Kelas**: TIF 23 RP CNS A
 - **Project**: pet_information (Tugas Besar Pemrograman Mobile)
+
+
+<h3>Demo Video</h3>
+<video width="480" controls>
+  <source src="videos/mobile.riview.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
